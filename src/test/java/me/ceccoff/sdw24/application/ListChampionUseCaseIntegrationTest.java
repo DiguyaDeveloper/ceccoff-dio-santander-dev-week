@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ListChampionUseCaseTest {
+class ListChampionUseCaseIntegrationTest {
 
     @Autowired
     private ListChampionsUseCase listChampionsUseCase;
