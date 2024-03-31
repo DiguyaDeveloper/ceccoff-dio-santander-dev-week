@@ -1,5 +1,6 @@
 package me.ceccoff.sdw24;
 
+import me.ceccoff.sdw24.application.AskChampionUseCase;
 import me.ceccoff.sdw24.application.ListChampionsUseCase;
 import me.ceccoff.sdw24.domain.ports.ChampionsRepository;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +17,11 @@ public class Application {
 	@Bean
 	public ListChampionsUseCase provideListChampionsUseCase(ChampionsRepository repository) {
 		return new ListChampionsUseCase(repository);
+	}
+
+	@Bean
+	public AskChampionUseCase provideAskChampionsUseCase(ChampionsRepository repository) {
+		return new AskChampionUseCase(repository);
 	}
 
 }
