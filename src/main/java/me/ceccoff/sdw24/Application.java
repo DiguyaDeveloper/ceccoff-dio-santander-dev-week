@@ -4,6 +4,7 @@ import me.ceccoff.sdw24.adapters.out.OpenAiChatGptApi;
 import me.ceccoff.sdw24.application.AskChampionUseCase;
 import me.ceccoff.sdw24.application.ListChampionsUseCase;
 import me.ceccoff.sdw24.domain.ports.ChampionsRepository;
+import me.ceccoff.sdw24.domain.ports.GenerativeAiApi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -23,8 +24,8 @@ public class Application {
 	}
 
 	@Bean
-	public AskChampionUseCase provideAskChampionsUseCase(ChampionsRepository repository, OpenAiChatGptApi openAiChatGptApi) {
-		return new AskChampionUseCase(repository, openAiChatGptApi);
+	public AskChampionUseCase provideAskChampionsUseCase(ChampionsRepository repository, GenerativeAiApi generativeAiApi) {
+		return new AskChampionUseCase(repository, generativeAiApi);
 	}
 
 }
