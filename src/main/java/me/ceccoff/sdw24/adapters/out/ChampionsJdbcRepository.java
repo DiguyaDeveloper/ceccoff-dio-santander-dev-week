@@ -1,6 +1,6 @@
 package me.ceccoff.sdw24.adapters.out;
 
-import me.ceccoff.sdw24.domain.model.Champions;
+import me.ceccoff.sdw24.domain.model.Champion;
 import me.ceccoff.sdw24.domain.ports.ChampionsRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,11 +13,11 @@ import java.util.Optional;
 public class ChampionsJdbcRepository implements ChampionsRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Champions> championsRowMapper;
+    private final RowMapper<Champion> championsRowMapper;
 
     public ChampionsJdbcRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.championsRowMapper = (rs, rowNum) -> new Champions(
+        this.championsRowMapper = (rs, rowNum) -> new Champion(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("role"),
@@ -27,14 +27,14 @@ public class ChampionsJdbcRepository implements ChampionsRepository {
     }
 
     @Override
-    public List<Champions> findAll() {
+    public List<Champion> findAll() {
         return jdbcTemplate.query("SELECT * FROM CHAMPIONS", championsRowMapper);
     }
 
     @Override
-    public Optional<Champions> findById(Long id) {
+    public Optional<Champion> findById(Long id) {
         String sql = "SELECT * FROM CHAMPIONS WHERE ID = ?";
-        Champions champion = jdbcTemplate.queryForObject(sql, championsRowMapper, id);
-        return Optional.ofNullable(champion);
+        List<Champion> champions = jdbcTemplate.query(sql, championsRowMapper, id);
+        return champions.stream().findFirst();
     }
 }
