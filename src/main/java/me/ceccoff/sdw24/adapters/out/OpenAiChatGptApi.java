@@ -1,12 +1,16 @@
 package me.ceccoff.sdw24.adapters.out;
 
+import feign.RequestInterceptor;
 import me.ceccoff.sdw24.domain.ports.GenerativeAiApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(name = "openAiChatGptApi", url = "${openai.base-url}")
+@FeignClient(name = "openAiChatGptApi", url = "${openai.base-url}", configuration = OpenAiChatGptApi.Config.class)
 public interface OpenAiChatGptApi extends GenerativeAiApi {
 
 
@@ -15,13 +19,11 @@ public interface OpenAiChatGptApi extends GenerativeAiApi {
 
     @Override
     default String generateContent(String objective, String context) {
-        String model = "${openai.model}";
-
         List<Message> messages = List.of(
                 new Message("system", objective),
                 new Message("user", objective)
         );
-        OpenAiChatCompletionRequest request = new OpenAiChatCompletionRequest(model, messages);
+        OpenAiChatCompletionRequest request = new OpenAiChatCompletionRequest("gpt-3.5-turbo", messages);
 
         OpenAiChatCompletionResponse response = chatCompletion(request);
 
@@ -33,4 +35,11 @@ public interface OpenAiChatGptApi extends GenerativeAiApi {
 
     record OpenAiChatCompletionResponse(List<Choice> choices) {}
     record Choice(Message message) {}
+
+    class Config {
+        @Bean
+        public RequestInterceptor apiKeyRequestInterceptor(@Value("${openai.api-key}") String apiKey) {
+            return requestTemplate -> requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer %s".formatted(apiKey));
+        }
+    }
 }
